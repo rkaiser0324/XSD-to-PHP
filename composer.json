@@ -1,0 +1,28 @@
+{
+    "name": "rkaiser0324/XSD2PHP",
+    "description": "LegkoXML (XSD2PHP) support.  Forked from elliotchance/XSD2PHP, a project which in turn was originally written by Mike Bevz.",
+    "license": "Apache-2.0",
+    "authors": [
+      {
+        "name": "Mike Bevz",
+        "email": "myb@mikebevz.com",
+        "homepage": "http://mikebevz.com",
+        "role": "Lead Developer"
+      },
+      {
+        "name": "DigiPowers, Inc.",
+        "homepage": "https://www.digipowers.com"
+      }
+    ],
+    "require" : {
+      "ext-xsl": "*",
+      "ext-soap": "*"
+    },
+    "require-dev": {
+      "phpunit/phpunit": "^6"
+    },
+    "scripts": {
+      "test": "phpunit --configuration test/phpunit.xml"
+    }
+}
+  

@@ -6,3 +6,5 @@
 .svn
 org.eclipse.*
 *.log
+/vendor
+/test/data/generated
