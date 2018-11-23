@@ -179,7 +179,7 @@ abstract class AbstractWsdl {
             $this->service = new $this->service();
         }
         
-        $this->common = new xsd2php\Common();
+        $this->common = new xsd2php\Common(null);
                 
         $this->refl = new \ReflectionClass($this->service);
         $this->wsdlName = $this->refl->getShortName();

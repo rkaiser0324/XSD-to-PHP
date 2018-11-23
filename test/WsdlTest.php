@@ -1,27 +1,22 @@
 <?php
-set_include_path(get_include_path().PATH_SEPARATOR.
-                realpath("../src"));
-                
-require_once 'com/mikebevz/xsd2php/Wsdl.php';
-require_once 'data/expected/ContactPersonWsdl/services/NavService.php';
-
 
 use dk\nordsign\application\services;
 use com\mikebevz\xsd2php\wsdl;
 
-class WsdlTest extends PHPUnit_Framework_TestCase
+class WsdlTest extends PHPUnit\Framework\TestCase
 {
 /**
      * XSD to PHP convertor class
      * @var com\mikebevz\xsd2php\AbstractWsdl
      */
     private $tclass; 
-
-    private $expDir = "data/expected/ContactPersonWsdl";
-    private $genDir = "data/generated/ContactPersonWsdl";
+    private $expDir;
+    private $genDir;
     
     protected function setUp ()
     {
+        $this->expDir = dirname(__FILE__) . '/data/expected/ContactPersonWsdl';
+        $this->genDir = dirname(__FILE__) . '/data/generated/ContactPersonWsdl';
         //$this->xsd = dirname(__FILE__)."/../resources/ubl2.0/maindoc/UBL-Order-2.0.xsd";
         $this->tclass = new wsdl\WsdlFactory();
     }

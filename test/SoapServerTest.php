@@ -1,13 +1,8 @@
 <?php
 use dk\nordsign\application\services;
-set_include_path(
-    get_include_path() . PATH_SEPARATOR . realpath("../src"));
 use com\mikebevz\xsd2php;
 
-
-require_once "com/mikebevz/xsd2php/SoapServer.php";
-
-class SoapServerTest extends PHPUnit_Framework_TestCase
+class SoapServerTest extends PHPUnit\Framework\TestCase
 {
     /**
      * 
@@ -19,12 +14,14 @@ class SoapServerTest extends PHPUnit_Framework_TestCase
     
     private $options;
     
-    private $expDir = "data/expected/SoapServer";
-    private $genDir = "data/generated/SoapServer";
+    private $expDir;
+    private $genDir;
     private static $actual;
     
     protected function setUp ()
     {
+        $this->expDir = dirname(__FILE__) . "/data/expected/SoapServer";
+        $this->genpDir = dirname(__FILE__) . "/data/generated/SoapServer";
         
         $this->options = array(
             'soap_version' => SOAP_1_2,

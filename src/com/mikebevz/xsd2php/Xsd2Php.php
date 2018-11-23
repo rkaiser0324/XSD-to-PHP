@@ -158,12 +158,15 @@ class Xsd2Php extends Common
         $this->xsdFile = $xsdFile;
 
         $this->dom = new \DOMDocument();
-        $this->dom->load($this->xsdFile,
+        if (!$this->dom->load($this->xsdFile,
         LIBXML_DTDLOAD |
         LIBXML_DTDATTR |
         LIBXML_NOENT |
-        LIBXML_XINCLUDE);
-         
+        LIBXML_XINCLUDE))
+        {
+            throw new \Exception("Cannot load XSD file " . $this->xsdFile);
+        }
+                 
         $this->xpath = new \DOMXPath($this->dom);
         $this->targetNamespace = $this->getTargetNS($this->xpath);
         $this->shortNamespaces = $this->getNamespaces($this->xpath);
@@ -171,7 +174,7 @@ class Xsd2Php extends Common
         $this->dom = $xsd = $this->loadIncludes($this->dom, dirname($this->xsdFile), $this->targetNamespace);
         $this->dom = $this->loadImports($this->dom, $this->xsdFile);
 
-        if ($this->debug) print_r($this->shortNamespaces);
+        if ($this->debug) print "NAMESPACES: " . print_r($this->shortNamespaces, true);
 
     }
 

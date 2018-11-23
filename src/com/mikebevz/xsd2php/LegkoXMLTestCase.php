@@ -1,7 +1,8 @@
 <?php
 
+namespace com\mikebevz\xsd2php;
 
-class LegkoXMLTestCase extends PHPUnit_Framework_TestCase {
+class LegkoXMLTestCase extends \PHPUnit\Framework\TestCase {
 
     
     protected function assertDirContentsEquals($expDir, $actDir) {
@@ -13,7 +14,7 @@ class LegkoXMLTestCase extends PHPUnit_Framework_TestCase {
             throw new RuntimeException("Actual dir not found: ".$actDir);
         }
 
-        $dir = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($expDir));
+        $dir = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($expDir));
         $expFiles = array();
         while($dir->valid()) {
             if (!$dir->isDot()) {
@@ -22,7 +23,7 @@ class LegkoXMLTestCase extends PHPUnit_Framework_TestCase {
             $dir->next();
         }
 
-        $dir = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($actDir));
+        $dir = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($actDir));
         $actFiles = array();
         while($dir->valid()) {
             if (!$dir->isDot()) {

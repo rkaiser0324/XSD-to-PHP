@@ -1,16 +1,10 @@
 <?php
 
-set_include_path(get_include_path().PATH_SEPARATOR.
-                realpath("../src"));
-
 use oasis\names\specification\ubl\schema\xsd\CommonBasicComponents_2;
 use dk\nordsign\schema\ContactCompany;
 use com\mikebevz\xsd2php;
 
-require_once "com/mikebevz/xsd2php/Xsd2Php.php";
-require_once "Bootstrap.php";
-
-class Xsd2PhpTest extends LegkoXMLTestCase
+class Xsd2PhpTest extends xsd2php\LegkoXMLTestCase
 {
     /**
      * XSD to PHP convertor class
@@ -23,33 +17,21 @@ class Xsd2PhpTest extends LegkoXMLTestCase
     protected function setUp ()
     {
         $this->xsd = dirname(__FILE__)."/../resources/ubl2.0/maindoc/UBL-Order-2.0.xsd";
-        $this->tclass = new xsd2php\Xsd2Php($this->xsd);
+        $this->tclass = new xsd2php\Xsd2Php(null, $this->xsd);
     }
     protected function tearDown ()
     {
         $this->tclass = null;        
     }
     
-    /*
-    private function rmdir_recursive($dir) {
-        if (is_dir($dir)) { 
-         $objects = scandir($dir); 
-         foreach ($objects as $object) { 
-           if ($object != "." && $object != "..") { 
-             if (filetype($dir."/".$object) == "dir") rmdir_recursive($dir."/".$object); else unlink($dir."/".$object); 
-           } 
-         } 
-         reset($objects); 
-         rmdir($dir); 
-       } 
-    }*/
-    
     public function testXSDMustBeConvertedToXML() {
         $xml = $this->tclass->getXML();
         $actual = $xml->saveXml();
         //file_put_contents(dirname(__FILE__).'/data/expected/ubl2.0/XSDConvertertoXML.xml', $xml->saveXml());
         $expected = file_get_contents(dirname(__FILE__).'/data/expected/ubl2.0/XSDConvertertoXML.xml');
-        $this->assertEquals($expected, $actual);
+        //file_put_contents(dirname(__FILE__) . '/exp.xml', $expected);
+        //file_put_contents(dirname(__FILE__) . '/act.xml', $actual);
+        $this->assertEquals($expected == $actual, 1, "The two XML strings are not equal.");
     }
     
     public function testPHPFilesMustBeSaved() {
@@ -87,11 +69,11 @@ class Xsd2PhpTest extends LegkoXMLTestCase
     }
     
     public function testSimpleSchema1() {
-        $this->tclass = new xsd2php\Xsd2Php("../resources/simple1/simple.xsd");
+        $this->tclass = new xsd2php\Xsd2Php(null, dirname(__FILE__) . "/../resources/simple1/simple.xsd");
         $xml = $this->tclass->getXML();
         //file_put_contents(dirname(__FILE__).'/data/expected/simple1/generated.xml', $xml->saveXml());
         $expectedXml = file_get_contents(dirname(__FILE__).'/data/expected/simple1/generated.xml');
-        $this->assertEquals($expectedXml, $xml->saveXml());
+        $this->assertEquals($expectedXml == $xml->saveXml(), 1, "The XML strings are not equal");
         
         
         if (file_exists(dirname(__FILE__).'/data/generated/simple1')) {
@@ -147,11 +129,11 @@ class Xsd2PhpTest extends LegkoXMLTestCase
     
     public function testMultiLevelImportAndIncludes() {
          
-         $this->tclass = new xsd2php\Xsd2Php("../resources/MultiLevelImport/ContactPerson.xsd");
+        $this->tclass = new xsd2php\Xsd2Php(null, dirname(__FILE__) . "/../resources/MultiLevelImport/ContactPerson.xsd");
          $xml = $this->tclass->getXML();
          //file_put_contents(dirname(__FILE__).'/data/expected/MultiLevelImport/generated.xml', $xml->saveXml());
          $expectedXml = file_get_contents(dirname(__FILE__).'/data/expected/MultiLevelImport/generated.xml');
-         $this->assertEquals($expectedXml, $xml->saveXml());
+         $this->assertEquals($expectedXml == $xml->saveXml(), 1, "The XML strings are not equal");
          
          if (file_exists(dirname(__FILE__).'/data/generated/MultiLevelImport')) {
             rmdir_recursive(realpath(dirname(__FILE__).'/data/generated/MultiLevelImport'));
@@ -169,11 +151,11 @@ class Xsd2PhpTest extends LegkoXMLTestCase
         $expPath = dirname(__FILE__).'/data/expected/ContactPerson1/';
         $genPath = dirname(__FILE__).'/data/generated/ContactPerson1/';
         
-         $this->tclass = new xsd2php\Xsd2Php("../resources/ContactPerson1/ContactPerson.xsd");
+        $this->tclass = new xsd2php\Xsd2Php(null, dirname(__FILE__) . "/../resources/ContactPerson1/ContactPerson.xsd");
          $xml = $this->tclass->getXML();
          //file_put_contents($expPath.'generated.xml', $xml->saveXml());
          $expectedXml = file_get_contents($expPath.'generated.xml');
-         $this->assertEquals($expectedXml, $xml->saveXml());
+         $this->assertEquals($expectedXml == $xml->saveXml(), 1, "The XML strings are not equal");
          
          if (file_exists($genPath)) {
             rmdir_recursive(realpath($genPath));
@@ -193,11 +175,11 @@ class Xsd2PhpTest extends LegkoXMLTestCase
         $expPath = dirname(__FILE__).'/data/expected/ContactCompany/';
         $genPath = dirname(__FILE__).'/data/generated/ContactCompany/';
         
-         $this->tclass = new xsd2php\Xsd2Php("../resources/ContactCompany/ContactCompany.xsd");
+        $this->tclass = new xsd2php\Xsd2Php(null, dirname(__FILE__) . "/../resources/ContactCompany/ContactCompany.xsd");
          $xml = $this->tclass->getXML();
          //file_put_contents($expPath.'generated.xml', $xml->saveXml());
          $expectedXml = file_get_contents($expPath.'generated.xml');
-         $this->assertEquals($expectedXml, $xml->saveXml());
+         $this->assertEquals($expectedXml == $xml->saveXml(), 1, "The XML strings are not equal");
          
          if (file_exists($genPath)) {
             rmdir_recursive(realpath($genPath));

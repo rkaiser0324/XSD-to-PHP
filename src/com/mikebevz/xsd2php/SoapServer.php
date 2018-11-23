@@ -51,7 +51,7 @@ class SoapServer extends \SoapServer {
 
     public function __construct ($wsdl, $options) {
 
-        $this->common = new Common();
+        $this->common = new Common(null);
                 
         $types = $this->getXSDTypes($wsdl);
         

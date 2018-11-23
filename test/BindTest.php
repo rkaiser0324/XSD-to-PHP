@@ -2,18 +2,13 @@
 use oasis\names\specification\ubl\schema\xsd\CommonAggregateComponents_2;
 use oasis\names\specification\ubl\schema\xsd\CommonBasicComponents_2;
 use dk\nordsign\schema\ContactCompany as CC;
-set_include_path(get_include_path().PATH_SEPARATOR.
-                realpath("../src").PATH_SEPARATOR.
-                realpath("data/expected/ContactCompany"));
 
 use com\mikebevz\xsd2php;
 
-require_once "com/mikebevz/xsd2php/Bind.php";
-require_once "com/mikebevz/xsd2php/Php2Xml.php";
 //require_once "dk/nordsign/schema/ContactCompany/ContactCompany.php";
 //require_once "dk/nordsign/schema/ContactCompany/AddressType.php";
 
-class BindTest extends PHPUnit_Framework_TestCase
+class BindTest extends PHPUnit\Framework\TestCase
 {
     /**
      * 
@@ -21,13 +16,15 @@ class BindTest extends PHPUnit_Framework_TestCase
      */
     private $tclass;  
     
-    private $expDir = "data/expected/ContactCompany";
-    private $genDir = "data/generated/ContactCompany";
+    private $expDir; 
+    private $genDir;
     
     
     protected function setUp ()
     {
-        $this->tclass = new xsd2php\Bind();
+        $this->expDir = dirname(__FILE__) . "/data/expected/ContactCompany";
+        $this->genDir = dirname(__FILE__) . "/data/generated/ContactCompany";
+        $this->tclass = new xsd2php\Bind(null);
     }
     protected function tearDown ()
     {

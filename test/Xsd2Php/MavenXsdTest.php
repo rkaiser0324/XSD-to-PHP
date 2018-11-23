@@ -1,13 +1,7 @@
 <?php
-set_include_path(get_include_path().PATH_SEPARATOR.
-realpath("../../src"));
-
 use com\mikebevz\xsd2php;
 
-require_once "com/mikebevz/xsd2php/Xsd2Php.php";
-require_once realpath(dirname(__FILE__)."/../Bootstrap.php");
-
-class MavenXsdTest extends LegkoXMLTestCase
+class MavenXsdTest extends xsd2php\LegkoXMLTestCase
 {
 
     /**
@@ -58,7 +52,7 @@ class MavenXsdTest extends LegkoXMLTestCase
         $actual = $xml->saveXml();
         //file_put_contents($this->expectedDir.'/ParsedSchema.xml', $xml->saveXml());
         $expected = file_get_contents($this->expectedDir.'/ParsedSchema.xml');
-        $this->assertEquals($expected, $actual);
+        $this->assertEquals($expected == $actual, 1, "The two XML strings are not equal.");
     }
 
     public function testSavePHPBindings() {

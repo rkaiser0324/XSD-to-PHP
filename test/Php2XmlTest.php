@@ -1,31 +1,26 @@
 <?php
 
-set_include_path(get_include_path().PATH_SEPARATOR.
-                realpath("../src"));
-
 use dk\nordsign\schema\ContactCompany as CCP;
 use oasis\names\specification\ubl\schema\xsd\CommonAggregateComponents_2 as CAC2;
 use oasis\names\specification\ubl\schema\xsd\CommonBasicComponents_2 as CBC2;
 use com\mikebevz\xsd2php;
 use oasis\names\specification\ubl\schema\xsd\Order_2;
 
-set_include_path(dirname(__FILE__).'/data/expected/ubl2.0'.PATH_SEPARATOR.
-                 dirname(__FILE__).'/data/expected/simple1'.PATH_SEPARATOR.
+set_include_path(dirname(__FILE__).'/data/expected/simple1'.PATH_SEPARATOR.
                  dirname(__FILE__).'/data/expected/simple1/bindings'.PATH_SEPARATOR.
                  get_include_path());
                         
 
-require_once "com/mikebevz/xsd2php/Php2Xml.php";
-
-class Php2XmlTest extends PHPUnit_Framework_TestCase
+class Php2XmlTest extends PHPUnit\Framework\TestCase
 {
     
     private $tclass;  
-    
+    private $expDir; 
     
     protected function setUp ()
     {
-        $this->tclass = new xsd2php\Php2Xml();
+        $this->expDir = dirname(__FILE__) . "/data/expected/";
+        $this->tclass = new xsd2php\Php2Xml(null);
     }
     protected function tearDown ()
     {
@@ -70,11 +65,11 @@ class Php2XmlTest extends PHPUnit_Framework_TestCase
         
         $order->BuyerCustomerParty = $buyerCustomer;
 
-       $php2xml = new xsd2php\Php2Xml();
+       $php2xml = new xsd2php\Php2Xml(null);
         
        $xml = $php2xml->getXml($order);
        //file_put_contents("data/expected/ubl2.0/Order.xml", $xml);
-       $expected = file_get_contents("data/expected/ubl2.0/Order.xml");
+       $expected = file_get_contents($this->expDir . "ubl2.0/Order.xml");
        //print_r($xml);
        $this->assertEquals($expected, $xml);
        
@@ -138,13 +133,13 @@ class Php2XmlTest extends PHPUnit_Framework_TestCase
         $shiporder->shipto = $shipto;
        
         
-        $php2xml = new xsd2php\Php2Xml();
+        $php2xml = new xsd2php\Php2Xml(null);
         
         $xml = $php2xml->getXml($shiporder);
        
        //file_put_contents("data/expected/simple1/shiporder.xml", $xml);
        
-       $expected = file_get_contents("data/expected/simple1/shiporder.xml");
+       $expected = file_get_contents($this->expDir . "simple1/shiporder.xml");
        
        $this->assertEquals($expected, $xml);
        //print_r($xml);
@@ -208,7 +203,7 @@ class Php2XmlTest extends PHPUnit_Framework_TestCase
         
         //file_put_contents("data/expected/ContactCompany/ContactCompany.xml", $xml);
        
-        $expected = file_get_contents("data/expected/ContactCompany/ContactCompany.xml");
+        $expected = file_get_contents($this->expDir ."ContactCompany/ContactCompany.xml");
        
         $this->assertEquals($expected, $xml);
     }
