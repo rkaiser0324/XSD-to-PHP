@@ -1,6 +1,6 @@
 {
-    "name": "rkaiser0324/XSD2PHP",
-    "description": "LegkoXML (XSD2PHP) support.  Forked from elliotchance/XSD2PHP, a project which in turn was originally written by Mike Bevz.",
+    "name": "rkaiser0324/XSD-to-PHP",
+    "description": "LegkoXML (XSD2PHP) support.  Forked from moyarada/XSD-to-PHP.",
     "license": "Apache-2.0",
     "authors": [
       {
