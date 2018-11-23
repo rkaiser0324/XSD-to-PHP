@@ -164,7 +164,7 @@ class Xsd2Php extends Common
         LIBXML_NOENT |
         LIBXML_XINCLUDE))
         {
-            throw new \Exception("Cannot load XSD file " . $this->xsdFile);
+            throw new \Exception("Cannot load XSD file: " . $this->xsdFile);
         }
                  
         $this->xpath = new \DOMXPath($this->dom);
@@ -174,7 +174,7 @@ class Xsd2Php extends Common
         $this->dom = $xsd = $this->loadIncludes($this->dom, dirname($this->xsdFile), $this->targetNamespace);
         $this->dom = $this->loadImports($this->dom, $this->xsdFile);
 
-        if ($this->debug) print "NAMESPACES: " . print_r($this->shortNamespaces, true);
+        if ($this->debug) printf("NAMESPACES: \n%s\n%s", $this->xsdFile, print_r($this->shortNamespaces, true));
 
     }
 
@@ -263,18 +263,24 @@ class Xsd2Php extends Common
             $namespace = $entry->getAttribute('namespace');
             $parent = $entry->parentNode;
             $xsd = new \DOMDocument();
+            // Assumes a relative path was used
             $xsdFileName = realpath(dirname($xsdFile).DIRECTORY_SEPARATOR.$entry->getAttribute("schemaLocation"));
-            if ($this->debug) print('Importing '.$xsdFileName."\n");
 
             if (!file_exists($xsdFileName)) {
-                if ($this->debug) print $xsdFileName. " is not found \n";
-                continue;
+                // Try using an absolute path instead.
+                $xsdFileName = realpath($entry->getAttribute("schemaLocation"));
+                if (!file_exists($xsdFileName)) {
+                    if ($this->debug) print "XSD not found: \"$xsdFileName\" \n";
+                    continue;
+                }
             }
             if (in_array($xsdFileName, $this->loadedImportFiles)) {
-                if ($this->debug) print("Schema ".$xsdFileName." has been already imported");
+                if ($this->debug) print("Schema already imported: \"$xsdFileName\" \n");
                 $parent->removeChild($entry);
                 continue;
             }
+            if ($this->debug) print("Importing: \"$xsdFileName\" \n");
+
             $filepath = dirname($xsdFileName);
             $result = $xsd->load($xsdFileName,
             LIBXML_DTDLOAD|LIBXML_DTDATTR|LIBXML_NOENT|LIBXML_XINCLUDE);
@@ -318,8 +324,10 @@ class Xsd2Php extends Common
         $xpath = new \DOMXPath($dom);
         $query = "//*[local-name()='import' and namespace-uri()='http://www.w3.org/2001/XMLSchema']";
         $imports = $xpath->query($query);
-        if ($imports->length != 0) {
-            $dom = $this->loadImports($dom);
+        foreach ($imports as $import)
+        {
+            printf("Loading import: %s\n", $import->getAttribute("schemaLocation"));
+            $dom = $this->loadImports($dom,  $import->getAttribute("schemaLocation"));
         }
 
         if ($this->debug) print_r("\n------------------------------------\n");

@@ -17,7 +17,7 @@ class Xsd2PhpTest extends xsd2php\LegkoXMLTestCase
     protected function setUp ()
     {
         $this->xsd = dirname(__FILE__)."/../resources/ubl2.0/maindoc/UBL-Order-2.0.xsd";
-        $this->tclass = new xsd2php\Xsd2Php(null, $this->xsd);
+        $this->tclass = new xsd2php\Xsd2Php($this->xsd);
     }
     protected function tearDown ()
     {
@@ -69,7 +69,7 @@ class Xsd2PhpTest extends xsd2php\LegkoXMLTestCase
     }
     
     public function testSimpleSchema1() {
-        $this->tclass = new xsd2php\Xsd2Php(null, dirname(__FILE__) . "/../resources/simple1/simple.xsd");
+        $this->tclass = new xsd2php\Xsd2Php(dirname(__FILE__) . "/../resources/simple1/simple.xsd");
         $xml = $this->tclass->getXML();
         //file_put_contents(dirname(__FILE__).'/data/expected/simple1/generated.xml', $xml->saveXml());
         $expectedXml = file_get_contents(dirname(__FILE__).'/data/expected/simple1/generated.xml');
@@ -129,7 +129,7 @@ class Xsd2PhpTest extends xsd2php\LegkoXMLTestCase
     
     public function testMultiLevelImportAndIncludes() {
          
-        $this->tclass = new xsd2php\Xsd2Php(null, dirname(__FILE__) . "/../resources/MultiLevelImport/ContactPerson.xsd");
+        $this->tclass = new xsd2php\Xsd2Php(dirname(__FILE__) . "/../resources/MultiLevelImport/ContactPerson.xsd");
          $xml = $this->tclass->getXML();
          //file_put_contents(dirname(__FILE__).'/data/expected/MultiLevelImport/generated.xml', $xml->saveXml());
          $expectedXml = file_get_contents(dirname(__FILE__).'/data/expected/MultiLevelImport/generated.xml');
@@ -151,7 +151,7 @@ class Xsd2PhpTest extends xsd2php\LegkoXMLTestCase
         $expPath = dirname(__FILE__).'/data/expected/ContactPerson1/';
         $genPath = dirname(__FILE__).'/data/generated/ContactPerson1/';
         
-        $this->tclass = new xsd2php\Xsd2Php(null, dirname(__FILE__) . "/../resources/ContactPerson1/ContactPerson.xsd");
+        $this->tclass = new xsd2php\Xsd2Php(dirname(__FILE__) . "/../resources/ContactPerson1/ContactPerson.xsd");
          $xml = $this->tclass->getXML();
          //file_put_contents($expPath.'generated.xml', $xml->saveXml());
          $expectedXml = file_get_contents($expPath.'generated.xml');
@@ -175,7 +175,7 @@ class Xsd2PhpTest extends xsd2php\LegkoXMLTestCase
         $expPath = dirname(__FILE__).'/data/expected/ContactCompany/';
         $genPath = dirname(__FILE__).'/data/generated/ContactCompany/';
         
-        $this->tclass = new xsd2php\Xsd2Php(null, dirname(__FILE__) . "/../resources/ContactCompany/ContactCompany.xsd");
+        $this->tclass = new xsd2php\Xsd2Php(dirname(__FILE__) . "/../resources/ContactCompany/ContactCompany.xsd");
          $xml = $this->tclass->getXML();
          //file_put_contents($expPath.'generated.xml', $xml->saveXml());
          $expectedXml = file_get_contents($expPath.'generated.xml');
