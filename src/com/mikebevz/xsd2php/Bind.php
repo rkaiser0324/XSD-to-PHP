@@ -79,8 +79,6 @@ class Bind extends Common {
      */
     public function bindXml($xml, $model) {
 
-        //print_r($xml."\n ".get_class($model));
-
         $this->dom = new \DOMDocument();
         $this->dom->loadXML($xml);
 
@@ -98,27 +96,31 @@ class Bind extends Common {
 				list ($ns, $name) = $this->parseQName($child->nodeName, true);
 			}
 
-			//$className = get_class($model);
-            //$className = $this->urnToPhpName($ns)."\\".$name;
-            try {
+			if (function_exists('opcache_get_status'))
+			{
+				$status = opcache_get_status();
+				if ($status && $status['opcache_enabled'])
+					throw new \RuntimeException("Opcache must be disabled for Reflection::getDocComment() to work.");
+			}
 
-				// I think you need to go up the class tree until you find a comment
-				$docs = $this->getComments($refl, $name);
-				$propertyDocs = $refl->getProperty($name)->getDocComment();
-				if ($propertyDocs != false)
-				{
-					$docs = $this->parseDocComments($propertyDocs);
+			$propertyDocs = $refl->getProperty($name)->getDocComment();
+			if ($propertyDocs != false)
+			{
+				$docs = $this->parseDocComments($propertyDocs);
+				if (!empty($docs['var']))
 					$className = $docs['var'];
-				}
-            } catch (\ReflectionException $e) {
-                throw new \RuntimeException($e->getMessage().". Class ".get_class($model));
-            }
+			}
+			if (empty($className))
+				throw new \RuntimeException(sprintf("Cannot determine class for %s", $name));
 
             if ($this->hasChild($child)) {
                 if (property_exists($model, $name)) {
                     $doc = new \DOMDocument();
-                    $doc->appendChild($doc->importNode($child, true));
-                    $model->{$name} = $this->bindXml($doc->saveXml(), new $className());
+					$doc->appendChild($doc->importNode($child, true));
+					$namespacedClassName = $refl->getNamespaceName() . '\\' . $className;
+					if (!class_exists($namespacedClassName))
+						throw new \RuntimeException(sprintf('Class for %s->%s has unknown class "%s"', get_class($model), $name, $className));
+                    $model->{$name} = $this->bindXml($doc->saveXml(), new $namespacedClassName());
                 } else {
                     throw new \RuntimeException('Class'. get_class($model). ' does not have property '.$name);
                 }
@@ -128,23 +130,15 @@ class Bind extends Common {
                     throw new \RuntimeException("Model ".get_class($model)." does not have property ".$name);
                 }
                 if (!class_exists($className)) {
-                    //print_r($className."\n");
                     $propertyDocs = $refl->getProperty($name)->getDocComment();
                     $docs = $this->parseDocComments($propertyDocs);
                     $type = $docs['xmlType'];
-                    print_r("Type: ". $type."\n");
-                    if ($type == 'attribute') {
+                    if (in_array($type, ['attribute', 'element'])) {
                         $model->{$name} = $child->nodeValue;
-                    } elseif ($type == 'element') {
-                        $model->{$name} = $child->nodeValue;
-                    } // elseif ($type == 'value') {
-                    //    $model->value = $child->nodeValue;
-                    //}
-                    else {
-                        throw new \RuntimeException('Class '.$className.' does not exist');
-                    }
+                    } else {
+						throw new \RuntimeException(sprintf('%s->%s has unknown type "%s"', get_class($model), $name, $type));
+					}
                 } else {
-                    //$name = $child->nodeName;
                     $cModel = new $className();
                     $cModel->value = $child->nodeValue;
                     $model->{$name} = $cModel;
@@ -155,29 +149,6 @@ class Bind extends Common {
 
 
         return $model;
-	}
-
-	private function getComments($refl, $name)
-	{
-		$docs = null;
-		$propertyDocs = $refl->getProperty($name)->getDocComment();
-		if (!$propertyDocs)
-		{
-			// Try the parent class
-			if ($refl->getParentClass())
-			{
-				$docs = $this->getComments($refl->getParentClass(), $name);
-			}
-			else
-			{
-				// No-op; this was the root class, so no luck
-			}
-		}
-		else
-		{
-			$docs = $this->parseDocComments($propertyDocs);
-		}
-		return $docs;
 	}
 
     public function hasChild($node) {
