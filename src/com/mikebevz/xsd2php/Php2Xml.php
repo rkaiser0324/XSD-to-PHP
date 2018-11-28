@@ -141,31 +141,17 @@ class Php2Xml extends Common {
 
     }
 
-
-
-    private function addProperty($docs, $dom) {
-        if ($docs['value'] != '') {
-            $el = "";
-            // check to make sure $docs['xmlNamespace'] is not empty
-            if (!empty($docs['xmlNamespace'])) {
-                $code = $this->getNsCode($docs['xmlNamespace']);
-                $el = $this->dom->createElement($code.":".$docs['xmlName']);
-            } else {
-                $el = $this->dom->createElement($docs['xmlName']);
-            }
-
+	private function addProperty($docs, $dom) {
+        if ($docs['value'] !== null) {
+            // Only use a prefix if $docs['xmlNamespace'] is not empty
+			$namespace_prefix = empty($docs['xmlNamespace']) ? '' : $this->getNsCode($docs['xmlNamespace']) . ':';
             if (is_object($docs['value'])) {
-                //print_r("Value is object \n");
+				$el = $this->dom->createElement($namespace_prefix . $docs['xmlName']);
                 $el = $this->parseObjectValue($docs['value'], $el);
             } elseif (is_string($docs['value'])) {
-                if (array_key_exists('xmlNamespace', $docs)) {
-                    $code = $this->getNsCode($docs['xmlNamespace']);
-                    $el = $this->dom->createElement($code.":".$docs['xmlName'], $docs['value']);
-                } else {
-                    $el = $this->dom->createElement($docs['xmlName'], $docs['value']);
-                }
+				$el = $this->dom->createElement($namespace_prefix . $docs['xmlName'], $docs['value']);
             } else {
-                //print_r("Value is not string");
+				throw new \RuntimeException("Value is neither string nor object");
             }
 
             $dom->appendChild($el);
